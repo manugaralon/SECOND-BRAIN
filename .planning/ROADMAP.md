@@ -22,7 +22,10 @@ The system is built in three executable phases plus one deferred phase. Phase 1 
   2. `kb/personal/` contains at least escoliosis, pies planos, and one additional context entry, each following the canonical schema
   3. `kb/INDEX.md` template exists with entry format (slug + domain + one-sentence summary + path) ready for processor output
   4. Running `python-frontmatter` against any personal entry parses without error — schema is valid YAML
-**Plans**: TBD
+**Plans:** 1 plan
+
+Plans:
+- [ ] 01-01-PLAN.md — Lock schema and author personal context seed entries
 
 ### Phase 2: Knowledge Processor
 **Goal**: `process.py` can convert all 14+ existing notes into structured KB entries, idempotently, with contradictions flagged and a processing log emitted
@@ -62,7 +65,7 @@ The system is built in three executable phases plus one deferred phase. Phase 1 
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. KB Schema + Personal Context Seed | 0/? | Not started | - |
+| 1. KB Schema + Personal Context Seed | 0/1 | Planning complete | - |
 | 2. Knowledge Processor | 0/? | Not started | - |
 | 3. Oracle Interface | 0/? | Not started | - |
 | 4. Semantic Search | 0/? | Deferred | - |

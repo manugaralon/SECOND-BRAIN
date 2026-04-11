@@ -7,7 +7,7 @@ The system is built in three executable phases plus one deferred phase. Phase 1 
 ## Phases
 
 - [x] **Phase 1: KB Schema + Personal Context Seed** - Lock the knowledge schema and author personal context entries manually before any LLM writes to the KB (completed 2026-04-10)
-- [ ] **Phase 2: Knowledge Processor** - Build `process.py` that converts `notes/*.md` → atomic `kb/*.md` with contradiction detection and idempotency
+- [x] **Phase 2: Knowledge Processor** - Build `process.py` that converts `notes/*.md` → atomic `kb/*.md` with contradiction detection and idempotency (completed 2026-04-11)
 - [ ] **Phase 3: Oracle Interface** - Write the `CLAUDE.md` that turns Claude Code into the oracle: domain filtering, contradiction surfacing, gap detection, personalized synthesis
 - [ ] **Phase 4: Semantic Search** - Add ChromaDB vector index when corpus exceeds ~100 concepts (deferred — plan only when threshold is reached)
 
@@ -66,6 +66,6 @@ Plans:
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. KB Schema + Personal Context Seed | 1/1 | Complete   | 2026-04-10 |
-| 2. Knowledge Processor | 1/2 | In Progress|  |
+| 2. Knowledge Processor | 2/2 | Complete   | 2026-04-11 |
 | 3. Oracle Interface | 0/? | Not started | - |
 | 4. Semantic Search | 0/? | Deferred | - |

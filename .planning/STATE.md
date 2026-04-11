@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: planning
-stopped_at: Completed 02-knowledge-processor/02-01-PLAN.md
-last_updated: "2026-04-11T20:32:19.097Z"
+stopped_at: Completed 02-knowledge-processor/02-02-PLAN.md
+last_updated: "2026-04-11T20:37:19.204Z"
 last_activity: 2026-04-08 — Roadmap created, requirements extracted (7 v1 requirements across 3 active phases)
 progress:
   total_phases: 4
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 3
-  completed_plans: 2
+  completed_plans: 3
   percent: 0
 ---
 
@@ -52,6 +52,7 @@ Progress: [░░░░░░░░░░] 0%
 *Updated after each plan completion*
 | Phase 01-kb-schema-personal-context-seed P01 | 3 | 2 tasks | 7 files |
 | Phase 02-knowledge-processor P01 | 3min | 3 tasks | 11 files |
+| Phase 02-knowledge-processor P02 | 3min | 2 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -69,6 +70,8 @@ Recent decisions affecting current work:
 - [Phase 01-kb-schema-personal-context-seed]: kb/concepts/ flat structure until corpus exceeds ~100 entries — domain frontmatter field handles filtering, filesystem does not
 - [Phase 02-knowledge-processor]: Top-level import in test_lint.py ensures ModuleNotFoundError is the RED state signal at collection time
 - [Phase 02-knowledge-processor]: Integration tests use deferred imports inside test functions so they collect cleanly before process.py exists
+- [Phase 02-knowledge-processor]: Groq imported lazily inside extract_concepts() to avoid ImportError in unit tests that never use it
+- [Phase 02-knowledge-processor]: Low-confidence concepts skipped in --no-confirm mode, logged with entries_skipped counter for traceability
 
 ### Pending Todos
 
@@ -80,6 +83,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-11T20:32:19.094Z
-Stopped at: Completed 02-knowledge-processor/02-01-PLAN.md
+Last session: 2026-04-11T20:37:19.201Z
+Stopped at: Completed 02-knowledge-processor/02-02-PLAN.md
 Resume file: None

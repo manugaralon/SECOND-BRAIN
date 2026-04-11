@@ -23,12 +23,12 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| KB-01 | Phase 2 | Pending |
-| KB-02 | Phase 1 | Pending |
-| KB-03 | Phase 1 | Pending |
-| KB-04 | Phase 2 | Pending |
+| KB-01 | Phase 2 | Complete |
+| KB-02 | Phase 1 | Complete |
+| KB-03 | Phase 1 | Complete |
+| KB-04 | Phase 2 | Complete |
 | KB-05 | Phase 3 | Pending |
 | KB-06 | Phase 3 | Pending |
-| KB-07 | Phase 2 | Pending |
+| KB-07 | Phase 2 | Complete |
 
 **Coverage: 7/7 v1 requirements mapped. No orphans.**

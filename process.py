@@ -384,7 +384,7 @@ def ingest_note(
     concepts = extract_concepts(post.content, post.metadata)
 
     if not concepts:
-        append_processed(log_path, note_slug, 0, "no_concepts_found")
+        append_processed(log_path, note_slug, 0, "no_concepts_found", contradictions_found=0)
         return {"n_created": 0, "n_skipped": 0, "status": "no_concepts_found"}
 
     n_created = 0
@@ -502,7 +502,7 @@ def _cmd_ingest(args: argparse.Namespace) -> int:
             total_skipped += result["n_skipped"]
         except Exception as e:
             print(f"[ERROR] {note_path.name}: {e}")
-            append_processed(log_path, note_path.stem, 0, "error", error=str(e))
+            append_processed(log_path, note_path.stem, 0, "error", error=str(e), contradictions_found=0)
 
     print(f"[DONE] created={total_created} skipped={total_skipped}")
     return 0

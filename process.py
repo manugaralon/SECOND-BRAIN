@@ -203,7 +203,7 @@ def append_processed(
 
 def extract_concepts(note_content: str, note_metadata: dict) -> list[dict]:
     from groq import Groq
-    from groq import BadRequestError as GroqBadRequestError
+    from groq import BadRequestError as GroqBadRequestError, RateLimitError as GroqRateLimitError
 
     client = Groq()
     topic = note_metadata.get("topic", "")
@@ -226,6 +226,9 @@ def extract_concepts(note_content: str, note_metadata: dict) -> list[dict]:
             response_format={"type": "json_object"},
             **common_args,
         )
+    except GroqRateLimitError:
+        # Re-raise rate limit errors — callers must handle or bubble up
+        raise
     except GroqBadRequestError:
         # Groq rejects json_object mode when the model produces malformed JSON.
         # Fall back to plain text response and parse JSON manually.

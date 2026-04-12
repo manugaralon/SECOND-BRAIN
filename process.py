@@ -70,6 +70,14 @@ Rules:
 - Output JSON: {"concepts": [{"concept": ..., "summary": ..., "domain": ..., "confidence": ..., "gaps": [...], "body": "..."}, ...]}
 """
 
+CONTRADICTION_SYSTEM_PROMPT = """You are a knowledge graph integrity checker. Given a new KB entry and a list of existing same-domain entries, identify which existing entries semantically contradict the new entry.
+
+A contradiction is when two entries make mutually exclusive claims about the same topic — not just different perspectives or complementary views, but direct logical conflicts (A says X is always true, B says X is never true).
+
+Output JSON: {"contradictions": [{"concept": "existing-slug", "detail": "one sentence describing what specifically conflicts"}, ...]}
+If no contradictions found: {"contradictions": []}
+"""
+
 
 # ---------- Lint ----------
 
@@ -195,6 +203,8 @@ def append_processed(
 
 def extract_concepts(note_content: str, note_metadata: dict) -> list[dict]:
     from groq import Groq
+    from groq import BadRequestError as GroqBadRequestError
+
     client = Groq()
     topic = note_metadata.get("topic", "")
     domain_hint = TOPIC_TO_DOMAIN.get(topic, "infer from content")
@@ -203,21 +213,92 @@ def extract_concepts(note_content: str, note_metadata: dict) -> list[dict]:
         f"Suggested domain (override if content disagrees): {domain_hint}\n\n"
         f"--- NOTE BODY ---\n{note_content}"
     )
-    response = client.chat.completions.create(
+    common_args = dict(
         model=GROQ_MODEL_EXTRACTION,
-        response_format={"type": "json_object"},
         messages=[
             {"role": "system", "content": EXTRACTION_SYSTEM_PROMPT},
             {"role": "user", "content": user_msg},
         ],
         temperature=0.1,
     )
+    try:
+        response = client.chat.completions.create(
+            response_format={"type": "json_object"},
+            **common_args,
+        )
+    except GroqBadRequestError:
+        # Groq rejects json_object mode when the model produces malformed JSON.
+        # Fall back to plain text response and parse JSON manually.
+        response = client.chat.completions.create(**common_args)
+
+    raw = response.choices[0].message.content
+    # Strip markdown code fences if present
+    raw_stripped = raw.strip()
+    if raw_stripped.startswith("```"):
+        lines = raw_stripped.splitlines()
+        raw_stripped = "\n".join(lines[1:-1] if lines[-1] == "```" else lines[1:])
+    try:
+        payload = json.loads(raw_stripped)
+    except json.JSONDecodeError as e:
+        raise RuntimeError(f"Groq returned invalid JSON: {e}\n{raw[:500]}")
+    concepts = payload.get("concepts", [])
+    # Coerce body to string if model returns bullet list as array
+    for c in concepts:
+        if isinstance(c.get("body"), list):
+            c["body"] = "\n".join(str(item) for item in c["body"])
+    return concepts
+
+
+def find_contradictions(new_entry: dict, kb_dir: Path) -> list[dict]:
+    """Pass 2 LLM call. Compares new_entry against existing same-domain entries.
+
+    Returns list of {concept: str, detail: str} for entries that semantically
+    contradict new_entry. Returns [] if no contradictions or kb_dir is empty.
+    """
+    from groq import Groq
+
+    domain = new_entry.get("domain", "")
+    if not domain:
+        return []
+
+    # Load existing same-domain entries for comparison
+    existing: list[dict] = []
+    for path in sorted(kb_dir.glob("*.md")):
+        try:
+            post = frontmatter.load(str(path))
+            if post.metadata.get("domain") == domain:
+                existing.append({
+                    "concept": post.metadata.get("concept", path.stem),
+                    "summary": post.metadata.get("summary", ""),
+                })
+        except Exception:
+            continue
+
+    if not existing:
+        return []
+
+    client = Groq()
+    user_msg = (
+        f"New entry:\n"
+        f"{json.dumps({'concept': new_entry.get('concept'), 'domain': domain, 'summary': new_entry.get('summary')}, ensure_ascii=False)}\n\n"
+        f"Existing {domain} entries to check against:\n"
+        f"{json.dumps(existing, ensure_ascii=False)}"
+    )
+    response = client.chat.completions.create(
+        model=GROQ_MODEL_EXTRACTION,
+        response_format={"type": "json_object"},
+        messages=[
+            {"role": "system", "content": CONTRADICTION_SYSTEM_PROMPT},
+            {"role": "user", "content": user_msg},
+        ],
+        temperature=0.0,
+    )
     raw = response.choices[0].message.content
     try:
         payload = json.loads(raw)
-    except json.JSONDecodeError as e:
-        raise RuntimeError(f"Groq returned invalid JSON: {e}\n{raw[:500]}")
-    return payload.get("concepts", [])
+    except json.JSONDecodeError:
+        return []
+    return payload.get("contradictions", [])
 
 
 def write_kb_entry(concept_slug: str, data: dict, kb_dir: Path) -> Path:
@@ -284,6 +365,7 @@ def ingest_note(
 
     n_created = 0
     n_skipped = 0
+    n_contradictions = 0
     for concept in concepts:
         slug = concept.get("concept", "").strip()
         if not slug:
@@ -322,11 +404,23 @@ def ingest_note(
         n_created += 1
         print(f"[WRITE] {slug} (confidence={confidence:.2f})")
 
+        # Pass 2: contradiction detection against existing same-domain entries
+        contradictions = find_contradictions(concept, kb_dir)
+        if contradictions:
+            entry_path = kb_dir / f"{slug}.md"
+            written = frontmatter.load(str(entry_path))
+            written["contradicts"] = contradictions
+            entry_path.write_text(frontmatter.dumps(written))
+            slugs_conflicting = [c["concept"] for c in contradictions]
+            print(f"[CONTRADICTION] {slug} contradicts: {slugs_conflicting}")
+            n_contradictions += 1
+
     # Log AFTER all writes complete (avoid partial-run race)
     status = "ok" if n_created > 0 else ("all_skipped" if n_skipped > 0 else "no_entries")
     append_processed(
         log_path, note_slug, n_created, status,
         entries_skipped=n_skipped,
+        contradictions_found=n_contradictions,
     )
     return {"n_created": n_created, "n_skipped": n_skipped, "status": status}
 

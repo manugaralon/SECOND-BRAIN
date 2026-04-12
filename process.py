@@ -254,6 +254,8 @@ def find_contradictions(new_entry: dict, kb_dir: Path) -> list[dict]:
 
     Returns list of {concept: str, detail: str} for entries that semantically
     contradict new_entry. Returns [] if no contradictions or kb_dir is empty.
+
+    Excludes the new entry's own slug from comparison to prevent self-contradiction.
     """
     from groq import Groq
 
@@ -261,14 +263,17 @@ def find_contradictions(new_entry: dict, kb_dir: Path) -> list[dict]:
     if not domain:
         return []
 
-    # Load existing same-domain entries for comparison
+    current_slug = new_entry.get("concept", "")
+
+    # Load existing same-domain entries for comparison, excluding self
     existing: list[dict] = []
     for path in sorted(kb_dir.glob("*.md")):
         try:
             post = frontmatter.load(str(path))
-            if post.metadata.get("domain") == domain:
+            entry_slug = post.metadata.get("concept", path.stem)
+            if post.metadata.get("domain") == domain and entry_slug != current_slug:
                 existing.append({
-                    "concept": post.metadata.get("concept", path.stem),
+                    "concept": entry_slug,
                     "summary": post.metadata.get("summary", ""),
                 })
         except Exception:
@@ -278,21 +283,37 @@ def find_contradictions(new_entry: dict, kb_dir: Path) -> list[dict]:
         return []
 
     client = Groq()
+    from groq import RateLimitError as GroqRateLimitError, BadRequestError as GroqBadRequestError
+
     user_msg = (
         f"New entry:\n"
         f"{json.dumps({'concept': new_entry.get('concept'), 'domain': domain, 'summary': new_entry.get('summary')}, ensure_ascii=False)}\n\n"
         f"Existing {domain} entries to check against:\n"
         f"{json.dumps(existing, ensure_ascii=False)}"
     )
-    response = client.chat.completions.create(
-        model=GROQ_MODEL_EXTRACTION,
-        response_format={"type": "json_object"},
-        messages=[
-            {"role": "system", "content": CONTRADICTION_SYSTEM_PROMPT},
-            {"role": "user", "content": user_msg},
-        ],
-        temperature=0.0,
-    )
+    try:
+        response = client.chat.completions.create(
+            model=GROQ_MODEL_EXTRACTION,
+            response_format={"type": "json_object"},
+            messages=[
+                {"role": "system", "content": CONTRADICTION_SYSTEM_PROMPT},
+                {"role": "user", "content": user_msg},
+            ],
+            temperature=0.0,
+        )
+    except GroqRateLimitError as e:
+        print(f"[WARN] find_contradictions rate-limited — skipping: {e}")
+        return []
+    except GroqBadRequestError:
+        # Fallback to plain text mode when json_object validation fails
+        response = client.chat.completions.create(
+            model=GROQ_MODEL_EXTRACTION,
+            messages=[
+                {"role": "system", "content": CONTRADICTION_SYSTEM_PROMPT},
+                {"role": "user", "content": user_msg},
+            ],
+            temperature=0.0,
+        )
     raw = response.choices[0].message.content
     try:
         payload = json.loads(raw)

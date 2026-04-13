@@ -1,4 +1,4 @@
-# Roadmap: Second Brain — El Oráculo
+# Roadmap: Second Brain — El Oraculo
 
 ## Overview
 
@@ -25,7 +25,7 @@ The system is built in three executable phases plus one deferred phase. Phase 1 
 **Plans:** 1/1 plans complete
 
 Plans:
-- [ ] 01-01-PLAN.md — Lock schema and author personal context seed entries
+- [x] 01-01-PLAN.md — Lock schema and author personal context seed entries
 
 ### Phase 2: Knowledge Processor
 **Goal**: `process.py` can convert all 14+ existing notes into structured KB entries, idempotently, with contradictions flagged and a processing log emitted
@@ -37,19 +37,28 @@ Plans:
   3. When a note contradicts an existing KB entry, the `contradicts` field is populated on at least one of the two entries and the processing log reports the conflict
   4. All 14+ existing notes are processed and result in a non-empty `kb/concepts/` directory
   5. `python process.py lint` checks all KB entries against the canonical schema and reports any violations
-**Plans**: TBD
+**Plans**: 3/3 plans complete
+
+Plans:
+- [x] 02-01-PLAN.md — TDD scaffold and core ingest pipeline
+- [x] 02-02-PLAN.md — Idempotency and lint subcommand
+- [x] 02-03-PLAN.md — Contradiction detection and batch ingest
 
 ### Phase 3: Oracle Interface
 **Goal**: Claude Code can answer personalized questions by reading the KB, applying personal context automatically, surfacing contradictions and gaps without manual setup per session
 **Depends on**: Phase 2
 **Requirements**: KB-05, KB-06
 **Success Criteria** (what must be TRUE):
-  1. Asking "qué ejercicios puedo hacer para la escoliosis" in a fresh Claude Code session returns an answer that explicitly references personal context entries (escoliosis, pies planos) without the user providing them
+  1. Asking "que ejercicios puedo hacer para la escoliosis" in a fresh Claude Code session returns an answer that explicitly references personal context entries (escoliosis, pies planos) without the user providing them
   2. When querying a domain with few entries, the oracle states "sobre X hay N entradas — cobertura escasa" unprompted
   3. When querying a topic where two KB entries contradict each other, the oracle surfaces both positions and does not silently resolve them
   4. The oracle declares which domains it consulted in every substantive answer
   5. A fresh session requires zero manual setup — reading `CLAUDE.md` is sufficient for Claude to navigate the full KB
-**Plans**: TBD
+**Plans:** 2 plans
+
+Plans:
+- [ ] 03-01-PLAN.md — Backfill INDEX.md with all KB entries + rebuild-index subcommand
+- [ ] 03-02-PLAN.md — Write CLAUDE.md oracle contract + human verification
 
 ### Phase 4: Semantic Search
 **Goal**: Vector-based retrieval replaces full-KB reads when the corpus exceeds ~100 concepts
@@ -67,5 +76,5 @@ Plans:
 |-------|----------------|--------|-----------|
 | 1. KB Schema + Personal Context Seed | 1/1 | Complete   | 2026-04-10 |
 | 2. Knowledge Processor | 3/3 | Complete   | 2026-04-12 |
-| 3. Oracle Interface | 0/? | Not started | - |
+| 3. Oracle Interface | 0/2 | In progress | - |
 | 4. Semantic Search | 0/? | Deferred | - |

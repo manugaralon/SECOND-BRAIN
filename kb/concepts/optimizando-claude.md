@@ -7,6 +7,8 @@ sources:
 - date: '2026-04-12'
   note: claude-env_DWcIFs7EVIh
 summary: Optimizar Claude requiere una configuración personalizada y continua actualización
+tags: [ia]
+
 ---
 
 * La configuración inicial es crucial para el rendimiento de Claude

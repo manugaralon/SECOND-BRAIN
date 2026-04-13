@@ -8,6 +8,8 @@ sources:
   note: claude-env_DToAP1hASy-
 summary: The Manus multistep method is a useful reference for complex workflows and
   tasks.
+tags: [ia]
+
 ---
 
 * The Manus multistep method is a reference for complex workflows.

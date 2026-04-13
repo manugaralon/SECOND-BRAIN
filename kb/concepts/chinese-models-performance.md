@@ -7,6 +7,8 @@ sources:
 - date: '2026-04-12'
   note: claude-env_20260407_114256
 summary: Chinese models have reached the level of Claude in terms of performance.
+tags: [ia]
+
 ---
 
 * Chinese models have reached the level of Claude.

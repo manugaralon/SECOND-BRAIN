@@ -8,6 +8,8 @@ sources:
   note: claude-env_DToAP1hASy-
 summary: Subagents can be used for specific purposes, such as improving writing and
   system design skills.
+tags: [ia]
+
 ---
 
 * Subagents can be specialized for tasks like brainstorming and writing.

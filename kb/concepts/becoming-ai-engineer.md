@@ -8,6 +8,8 @@ sources:
   note: claude-env_20260407_114003
 summary: The post provides a roadmap to become an AI engineer by 2027, emphasizing
   the importance of learning and building real products.
+tags: [ia]
+
 ---
 
 * Learn Python and get comfortable calling LLM APIs

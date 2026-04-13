@@ -8,6 +8,8 @@ sources:
   note: claude-env_DWKuBYqiX5o
 summary: Cloud UX Pro Max is a tool that teaches Cloud to design and provides industry-proven
   designs
+tags: [ia]
+
 ---
 
 * Cloud UX Pro Max teaches Cloud to design

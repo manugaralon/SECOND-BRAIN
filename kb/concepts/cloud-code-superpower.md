@@ -8,6 +8,8 @@ sources:
   note: claude-env_DWKuBYqiX5o
 summary: Cloud Code Superpower is a tool that automates tasks and creates subagents
   to work on projects
+tags: [ia]
+
 ---
 
 * Cloud Code Superpower automates tasks and creates subagents

@@ -9,6 +9,8 @@ sources:
 summary: The KERNEL framework is a set of guidelines for crafting effective prompts
   for AI models, emphasizing simplicity, verifiability, reproducibility, and narrow
   scope.
+tags: [ia]
+
 ---
 
 * The KERNEL framework consists of six key components: Keep it simple, Easy to verify, Reproducible results, Narrow scope, Explicit constraints, and Logical structure.

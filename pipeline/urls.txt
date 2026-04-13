@@ -1,0 +1,19 @@
+https://www.instagram.com/reels/DRvrvjSEdZa/
+https://www.instagram.com/p/DQ18uOvgZTC/
+https://www.instagram.com/p/DVgkuY6jpJB/
+https://www.instagram.com/p/DVY0e-NAD0Y/
+https://www.instagram.com/p/DV0-EABDN40/
+https://www.instagram.com/p/DV8qasfDWXx/
+https://www.instagram.com/p/DV55qroDDJp/
+https://www.instagram.com/p/DToAP1hASy-/
+https://www.instagram.com/p/DWKuBYqiX5o/
+https://www.instagram.com/p/DWMPTvCDXcn/
+https://www.instagram.com/p/DWcIFs7EVIh/
+https://www.instagram.com/reels/DTfU311EvFu/
+https://www.instagram.com/reels/DTPDQTJDGmO/
+https://www.instagram.com/p/DWjGQLTjSdj/
+
+# Para ejecutar:
+#   export GROQ_API_KEY='tu_key'
+#   python3 transcribe.py --urls urls.txt --output ./notes --topic "claude-env"
+

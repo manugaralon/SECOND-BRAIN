@@ -8,6 +8,8 @@ sources:
   note: claude-env_DWMPTvCDXcn
 summary: Los comandos de slash son cortos de customizaciones que se pueden utilizar
   para realizar tareas específicas sin tener que reescribir nada.
+tags: [ia]
+
 ---
 
 * Los comandos de slash son cortos de customizaciones que se pueden utilizar para realizar tareas específicas.

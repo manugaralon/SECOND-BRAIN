@@ -6,7 +6,7 @@ Subcommands:
     ingest --all           Process all notes in NOTES_DIR
     lint                   Validate kb/concepts/*.md against schema.md
 
-Reads from: /home/manuel/Desktop/PROJECTS/IMPENV/pipeline/notes/
+Reads from: /home/manuel/Desktop/PROJECTS/SECONDBRAIN/pipeline/notes/
 Writes to:  kb/concepts/
 Idempotency log: ./processed.log
 """
@@ -33,7 +33,7 @@ VALID_DOMAINS: set[str] = {
     "esoterismo", "psicologia", "deportes", "personal",
 }
 
-NOTES_DIR: Path = Path("/home/manuel/Desktop/PROJECTS/IMPENV/pipeline/notes")
+NOTES_DIR: Path = Path("/home/manuel/Desktop/PROJECTS/SECONDBRAIN/pipeline/notes")
 KB_CONCEPTS_DIR: Path = Path("kb/concepts")
 KB_PERSONAL_DIR: Path = Path("kb/personal")
 PROCESSED_LOG: Path = Path("processed.log")

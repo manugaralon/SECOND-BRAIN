@@ -11,6 +11,8 @@ sources:
   note: claude-env_DTfU311EvFu
 summary: Se puede dar acceso a datos de mercados de predicción con código cuadrado
   utilizando Polyrouter MCP
+tags: [ia]
+
 ---
 
 * Polyrouter MCP permite el acceso a datos de mercados de predicción

@@ -8,6 +8,8 @@ sources:
   note: claude-env_20260407_114003
 summary: Deploying AI apps on a real cloud, such as AWS, is essential for becoming
   an AI engineer.
+tags: [ia]
+
 ---
 
 * Deploy projects on a real cloud, such as AWS or GCP

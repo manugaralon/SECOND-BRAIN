@@ -8,6 +8,8 @@ sources:
   note: claude-env_20260407_114517
 summary: Mejorar las habilidades de prompting es crucial para interactuar de manera
   efectiva con modelos de lenguaje como Claude.
+tags: [ia]
+
 ---
 
 * Desafiar a Claude con instrucciones específicas puede mejorar su desempeño.

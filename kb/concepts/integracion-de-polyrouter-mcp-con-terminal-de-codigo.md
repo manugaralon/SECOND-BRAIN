@@ -11,6 +11,8 @@ sources:
   note: claude-env_DTfU311EvFu
 summary: Se puede conectar el Polyrouter MCP a la terminal de código cloud para acceder
   a datos de mercados de predicción
+tags: [ia]
+
 ---
 
 * Se puede instalar el Polyrouter MCP localmente

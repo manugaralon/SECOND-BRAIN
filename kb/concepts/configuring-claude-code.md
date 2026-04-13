@@ -8,6 +8,8 @@ sources:
   note: claude-env_20260407_114256
 summary: 'To configure Claude Code, you need to change two things: the Anthropic base
   URL and the Anthropic authentication token.'
+tags: [ia]
+
 ---
 
 * Configuring Claude Code requires changing two specific settings.

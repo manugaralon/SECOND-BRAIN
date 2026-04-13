@@ -9,6 +9,8 @@ sources:
 summary: Se puede configurar un agente de revisión de código para asegurarse de que
   los problemas de seguridad y de búsqueda de bolsas se resuelvan antes de que se
   mezcle el código.
+tags: [ia]
+
 ---
 
 * El agente de revisión de código se asegura de que los problemas de seguridad se resuelvan antes de que se mezcle el código.

@@ -7,6 +7,8 @@ sources:
 - date: '2026-04-12'
   note: claude-env_20260407_114256
 summary: Anthropic published its API format publicly, which was copied by other models.
+tags: [ia]
+
 ---
 
 * Anthropic published its API format publicly.

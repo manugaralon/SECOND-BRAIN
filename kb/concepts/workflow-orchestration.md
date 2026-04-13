@@ -8,6 +8,8 @@ sources:
   note: claude-env_20260407_114344
 summary: Workflow orchestration involves planning, verification, and improvement to
   ensure efficient task management.
+tags: [ia]
+
 ---
 
 * Enter plan mode for non-trivial tasks

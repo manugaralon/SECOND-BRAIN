@@ -8,6 +8,8 @@ sources:
   note: claude-env_DRvrvjSEdZa
 summary: The quality of the prompt significantly impacts the quality of the response
   in AI models like ChatGPT.
+tags: [ia]
+
 ---
 
 * The quality of the response is directly related to the quality of the prompt.

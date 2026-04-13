@@ -8,6 +8,8 @@ sources:
   note: claude-env_20260407_113900
 summary: Simplicity is a crucial factor in crafting effective prompts for AI models,
   as it helps to reduce ambiguity and improve the model's understanding of the task.
+tags: [ia]
+
 ---
 
 * Simple prompts are more effective because they provide a clear and concise description of the task.

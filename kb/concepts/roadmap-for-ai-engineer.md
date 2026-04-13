@@ -8,6 +8,8 @@ sources:
   note: claude-env_20260407_114003
 summary: The post provides a step-by-step roadmap to become an AI engineer, covering
   core skills, backend development, and shipping real products.
+tags: [ia]
+
 ---
 
 * Step 1: Learn core skills such as Python, OpenAI API, and Git/GitHub

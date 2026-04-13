@@ -8,6 +8,8 @@ sources:
   note: claude-env_DWKuBYqiX5o
 summary: N8n MSP is a tool that gives Cloud access to automate tasks and creates workflows
   for N8n
+tags: [ia]
+
 ---
 
 * N8n MSP gives Cloud access to automate tasks

@@ -8,6 +8,8 @@ sources:
   note: claude-env_20260407_114256
 summary: To check which model Claude is using, you can ask it directly or run a specific
   command.
+tags: [ia]
+
 ---
 
 * You can ask Claude directly which model it is using.

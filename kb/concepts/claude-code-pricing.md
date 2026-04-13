@@ -8,6 +8,8 @@ sources:
   note: claude-env_20260407_114256
 summary: Claude Code could be a very expensive development tool, but it might also
   be available for free.
+tags: [ia]
+
 ---
 
 * Claude Code is a development tool that might be expensive.

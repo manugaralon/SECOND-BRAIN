@@ -8,6 +8,8 @@ sources:
   note: claude-env_DWcIFs7EVIh
 summary: Crear workflows reutilizables en Claude puede aumentar la eficiencia y reducir
   el tiempo de trabajo
+tags: [ia]
+
 ---
 
 * Los workflows reutilizables pueden ser creados mediante la configuración de Claude

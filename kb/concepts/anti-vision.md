@@ -8,6 +8,8 @@ sources:
   note: claude-env_20260407_114124
 summary: The anti-vision is a concept that involves defining what you don't want in
   your life, in order to clarify what you truly desire.
+tags: [personal]
+
 ---
 
 * The anti-vision is a powerful tool for clarifying one's goals and desires. 

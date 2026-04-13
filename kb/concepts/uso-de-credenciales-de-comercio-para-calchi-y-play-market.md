@@ -12,6 +12,8 @@ sources:
   note: claude-env_DTfU311EvFu
 summary: Se pueden instalar credenciales de comercio para Calchi y Play Market para
   utilizar los servicios de predicción de mercados
+tags: [ia]
+
 ---
 
 * Se pueden instalar credenciales de comercio para Calchi y Play Market

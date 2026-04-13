@@ -8,6 +8,8 @@ sources:
   note: claude-env_20260407_114003
 summary: Practicing programming in Python and resolving small problems is crucial
   for becoming an AI engineer.
+tags: [ia]
+
 ---
 
 * Practice programming in Python to improve skills

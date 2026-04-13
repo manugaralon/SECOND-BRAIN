@@ -8,6 +8,8 @@ sources:
   note: claude-env_DWMPTvCDXcn
 summary: Las reglas se pueden organizar en fichas separadas para que sean más fáciles
   de manejar y mantener.
+tags: [ia]
+
 ---
 
 * Las reglas se pueden organizar en fichas separadas para que sean más fáciles de manejar.

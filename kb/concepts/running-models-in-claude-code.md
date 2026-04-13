@@ -9,6 +9,8 @@ sources:
 - date: '2026-04-12'
   note: claude-env_20260407_114256
 summary: There is a way to run certain models inside Claude Code for free.
+tags: [ia]
+
 ---
 
 * There is a way to run models inside Claude Code for free.

@@ -7,6 +7,8 @@ sources:
 - date: '2026-04-12'
   note: claude-env_20260407_114256
 summary: Claude is just a shell, and the model inside can be swapped.
+tags: [ia]
+
 ---
 
 * Claude is just a shell.

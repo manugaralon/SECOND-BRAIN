@@ -8,6 +8,8 @@ sources:
   note: claude-env_DWKuBYqiX5o
 summary: Cloud Mem is a tool that gives Cloud permanent memory, allowing it to recall
   previous sessions
+tags: [ia]
+
 ---
 
 * Cloud Mem gives Cloud permanent memory

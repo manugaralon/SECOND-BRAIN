@@ -11,6 +11,8 @@ gaps:
   - "Grado de pronacion (leve, moderado, severo) no documentado"
   - "Si usa plantillas ortopedicas actualmente"
   - "Impacto especifico en la biomecanica al correr"
+tags: [personal]
+
 ---
 
 - Pies planos diagnosticados

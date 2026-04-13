@@ -8,6 +8,8 @@ sources:
   note: claude-env_DToAP1hASy-
 summary: Exploring GitHub repositories can help improve Claude Env skills and find
   useful codes and subagents.
+tags: [ia]
+
 ---
 
 * The official Anthropix set of Claude Env keys is a good starting point.

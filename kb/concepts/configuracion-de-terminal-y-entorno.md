@@ -8,6 +8,8 @@ sources:
   note: claude-env_20260407_114517
 summary: La configuración adecuada del terminal y entorno de desarrollo puede mejorar
   la productividad.
+tags: [ia]
+
 ---
 
 * Utilizar herramientas como Ghostty puede mejorar la experiencia de desarrollo.

@@ -8,6 +8,8 @@ sources:
   note: claude-env_20260407_114124
 summary: The flow state is a mental state of complete focus and immersion in an activity,
   where one's skills and challenges are perfectly balanced.
+tags: [psicologia]
+
 ---
 
 * The flow state is characterized by heightened focus, concentration, and enjoyment. 

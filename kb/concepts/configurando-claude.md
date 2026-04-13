@@ -8,6 +8,8 @@ sources:
   note: claude-env_DWcIFs7EVIh
 summary: Configurar Claude con archivos y carpetas personalizados puede aumentar su
   valor y eficiencia
+tags: [ia]
+
 ---
 
 * Crear un archivo agentes.md para definir la voz y el estilo de trabajo

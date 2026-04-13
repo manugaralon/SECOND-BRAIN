@@ -9,6 +9,8 @@ sources:
 summary: The note discusses various productivity techniques such as the Pomodoro Technique,
   3/3/3 Method, Eisenhower Matrix, Eat the Frog, Seinfeld Strategy, and Time Blocking
   to help individuals manage their time more efficiently.
+tags: [personal]
+
 ---
 
 * The Pomodoro Technique involves working in focused 25-minute increments, followed by a 5-minute break. 

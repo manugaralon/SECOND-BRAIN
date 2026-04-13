@@ -10,6 +10,8 @@ sources:
   note: claude-env_DTPDQTJDGmO
 summary: To personalize the frontend of Claude, execute a specific command to download
   the Anthropix specification
+tags: [ia]
+
 ---
 
 * Claude Cotip is used for frontend personalization

@@ -10,6 +10,8 @@ summary: Steve Jobs' approach to sales excellence involves creating a unique val
   proposition, focusing on benefits, keeping the message simple, telling a compelling
   story, knowing the audience, creating an experience, not being afraid to polarize,
   and persisting in the face of rejection.
+tags: [ia]
+
 ---
 
 * Create a unique value proposition that differentiates your product or service. 

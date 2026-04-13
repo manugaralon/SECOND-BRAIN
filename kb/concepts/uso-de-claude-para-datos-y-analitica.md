@@ -8,6 +8,8 @@ sources:
   note: claude-env_20260407_114517
 summary: Claude puede ser utilizado para trabajar con datos y analítica de manera
   eficiente.
+tags: [ia]
+
 ---
 
 * La CLI 'bq' puede ser utilizada para extraer y analizar métricas de inmediato.

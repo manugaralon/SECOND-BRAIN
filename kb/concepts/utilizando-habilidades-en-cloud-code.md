@@ -8,6 +8,8 @@ sources:
   note: claude-env_DWMPTvCDXcn
 summary: Las habilidades en Cloud Code son un conjunto de instrucciones que se siguen
   cuando se reconoce una situación específica.
+tags: [ia]
+
 ---
 
 * Las habilidades en Cloud Code son un conjunto de instrucciones que se siguen cuando se reconoce una situación específica.

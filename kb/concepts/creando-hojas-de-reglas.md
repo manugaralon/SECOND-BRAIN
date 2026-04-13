@@ -8,6 +8,8 @@ sources:
   note: claude-env_DWMPTvCDXcn
 summary: Las hojas de reglas son un conjunto de reglas que siempre deben seguirse
   para asegurarse de que el código se ejecute correctamente.
+tags: [ia]
+
 ---
 
 * Las hojas de reglas son un conjunto de reglas que siempre deben seguirse.

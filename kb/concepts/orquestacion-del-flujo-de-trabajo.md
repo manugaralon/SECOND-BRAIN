@@ -8,6 +8,8 @@ sources:
   note: claude-env_20260407_114517
 summary: La orquestación del flujo de trabajo es crucial para la eficiencia en proyectos,
   enfatizando la planificación, estrategia de subagentes y verificación.
+tags: [ia]
+
 ---
 
 * La planificación es esencial para cualquier tarea no trivial.

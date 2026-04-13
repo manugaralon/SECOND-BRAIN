@@ -9,6 +9,8 @@ sources:
 - date: '2026-04-12'
   note: claude-env_20260407_114256
 summary: There is a hack that makes Claude Code basically free.
+tags: [ia]
+
 ---
 
 * There is a hack that makes Claude Code free.

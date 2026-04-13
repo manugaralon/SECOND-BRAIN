@@ -8,6 +8,8 @@ sources:
   note: claude-env_20260407_113900
 summary: Explicit constraints play a vital role in crafting effective prompts for
   AI models, as they help to define the scope and boundaries of the task.
+tags: [ia]
+
 ---
 
 * Explicit constraints help to clarify the task and reduce ambiguity, leading to more accurate and relevant results.

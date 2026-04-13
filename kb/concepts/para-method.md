@@ -8,6 +8,8 @@ sources:
   note: claude-env_20260407_114124
 summary: The P.A.R.A. method is a framework for organizing ideas and information,
   which involves categorizing content into areas, projects, resources, and archives.
+tags: [ia]
+
 ---
 
 * The P.A.R.A. method involves categorizing content into four main categories: areas, projects, resources, and archives. 

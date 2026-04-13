@@ -11,6 +11,8 @@ gaps:
   - "Severidad exacta de la curvatura (grados Cobb) no documentada"
   - "Tipo de escoliosis (idiopatica, degenerativa, etc.) pendiente de confirmar"
   - "Tratamiento actual o historial de fisioterapia desconocido"
+tags: [personal]
+
 ---
 
 - Escoliosis lumbar diagnosticada

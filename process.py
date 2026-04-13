@@ -79,6 +79,67 @@ If no contradictions found: {"contradictions": []}
 """
 
 
+# ---------- Index ----------
+
+INDEX_PATH: Path = Path("kb/INDEX.md")
+
+INDEX_HEADER = """\
+# Knowledge Base Index
+
+This index is auto-maintained by the processor (`process.py`). Manual edits below the separator comment will be overwritten.
+
+| Slug | Domain | Summary | Path |
+|------|--------|---------|------|
+"""
+
+INDEX_FOOTER = "\n<!-- Entries below are managed by process.py -->\n"
+
+
+def rebuild_index(
+    concepts_dir: Path = KB_CONCEPTS_DIR,
+    personal_dir: Path = KB_PERSONAL_DIR,
+    index_path: Path = INDEX_PATH,
+) -> int:
+    """Regenerate kb/INDEX.md from all .md files in concepts_dir and personal_dir.
+
+    Returns the total number of entries written.
+    """
+    rows: list[tuple[str, str, str, str]] = []  # (slug, domain, summary, path)
+
+    def _load_dir(directory: Path) -> list[tuple[str, str, str, str]]:
+        entries: list[tuple[str, str, str, str]] = []
+        if not directory.exists():
+            return entries
+        for md_path in sorted(directory.glob("*.md")):
+            try:
+                post = frontmatter.load(str(md_path))
+            except Exception as e:
+                print(f"[WARN] Could not parse {md_path}: {e}")
+                continue
+            slug = post.metadata.get("concept", md_path.stem)
+            domain = post.metadata.get("domain", "")
+            summary = post.metadata.get("summary", "")
+            # Escape pipe characters so they don't break the Markdown table
+            summary = str(summary).replace("|", "\\|")
+            rel_path = str(md_path).replace("\\", "/")
+            entries.append((slug, domain, summary, rel_path))
+        return entries
+
+    personal_rows = _load_dir(personal_dir)
+    concept_rows = _load_dir(concepts_dir)
+    rows = personal_rows + concept_rows
+
+    lines = [INDEX_HEADER]
+    for slug, domain, summary, path in rows:
+        lines.append(f"| {slug} | {domain} | {summary} | {path} |\n")
+    lines.append(INDEX_FOOTER)
+
+    index_path.parent.mkdir(parents=True, exist_ok=True)
+    index_path.write_text("".join(lines))
+    print(f"[OK] INDEX.md written — {len(rows)} entries ({len(personal_rows)} personal, {len(concept_rows)} concepts)")
+    return len(rows)
+
+
 # ---------- Lint ----------
 
 def lint_entry(path: Path) -> list[str]:
@@ -504,7 +565,17 @@ def _cmd_ingest(args: argparse.Namespace) -> int:
             print(f"[ERROR] {note_path.name}: {e}")
             append_processed(log_path, note_path.stem, 0, "error", error=str(e), contradictions_found=0)
 
+    # Keep index in sync after every ingest run
+    rebuild_index()
     print(f"[DONE] created={total_created} skipped={total_skipped}")
+    return 0
+
+
+def _cmd_rebuild_index(args: argparse.Namespace) -> int:
+    concepts_dir = Path(args.concepts_dir) if args.concepts_dir else KB_CONCEPTS_DIR
+    personal_dir = Path(args.personal_dir) if args.personal_dir else KB_PERSONAL_DIR
+    index_path = Path(args.index_path) if args.index_path else INDEX_PATH
+    rebuild_index(concepts_dir, personal_dir, index_path)
     return 0
 
 
@@ -527,6 +598,12 @@ def main() -> int:
     p_lint = sub.add_parser("lint", help="Validate kb/ entries against schema")
     p_lint.add_argument("--kb-dir", default=None, help="Lint a specific directory only")
     p_lint.set_defaults(func=_cmd_lint)
+
+    p_rebuild = sub.add_parser("rebuild-index", help="Regenerate kb/INDEX.md from disk")
+    p_rebuild.add_argument("--concepts-dir", default=None, help="Override KB_CONCEPTS_DIR")
+    p_rebuild.add_argument("--personal-dir", default=None, help="Override KB_PERSONAL_DIR")
+    p_rebuild.add_argument("--index-path", default=None, help="Override INDEX_PATH")
+    p_rebuild.set_defaults(func=_cmd_rebuild_index)
 
     args = parser.parse_args()
     return args.func(args)

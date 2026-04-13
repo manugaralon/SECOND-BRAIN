@@ -5,9 +5,9 @@ Este proyecto es la base de conocimiento personal de Manuel. Claude Code actua c
 ## KB Layout
 
     kb/
-      concepts/    — domain knowledge entries (flat structure)
-      personal/    — Manuel's personal context (4 entries)
-      INDEX.md     — slug | domain | summary | path (complete index)
+      kb/concepts/    — domain knowledge entries (flat structure)
+      kb/personal/    — Manuel's personal context (4 entries)
+      kb/INDEX.md     — slug | domain | summary | path (complete index)
 
 Domains: fisioterapia | ia | finanzas | trading | esoterismo | psicologia | deportes | personal
 

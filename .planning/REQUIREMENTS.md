@@ -27,7 +27,7 @@
 | KB-02 | Phase 1 | Complete |
 | KB-03 | Phase 1 | Complete |
 | KB-04 | Phase 2 | Complete |
-| KB-05 | Phase 3 | Pending |
+| KB-05 | Phase 3 | Complete |
 | KB-06 | Phase 3 | Pending |
 | KB-07 | Phase 2 | Complete |
 

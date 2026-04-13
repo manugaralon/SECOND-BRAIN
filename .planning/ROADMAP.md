@@ -54,7 +54,7 @@ Plans:
   3. When querying a topic where two KB entries contradict each other, the oracle surfaces both positions and does not silently resolve them
   4. The oracle declares which domains it consulted in every substantive answer
   5. A fresh session requires zero manual setup — reading `CLAUDE.md` is sufficient for Claude to navigate the full KB
-**Plans:** 2 plans
+**Plans:** 1/2 plans executed
 
 Plans:
 - [ ] 03-01-PLAN.md — Backfill INDEX.md with all KB entries + rebuild-index subcommand
@@ -76,5 +76,5 @@ Plans:
 |-------|----------------|--------|-----------|
 | 1. KB Schema + Personal Context Seed | 1/1 | Complete   | 2026-04-10 |
 | 2. Knowledge Processor | 3/3 | Complete   | 2026-04-12 |
-| 3. Oracle Interface | 0/2 | In progress | - |
+| 3. Oracle Interface | 1/2 | In Progress|  |
 | 4. Semantic Search | 0/? | Deferred | - |

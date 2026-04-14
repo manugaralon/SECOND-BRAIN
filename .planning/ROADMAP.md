@@ -68,7 +68,7 @@ Plans:
   1. ChromaDB index is populated from `kb/*.md` and stays in sync when entries are added or updated
   2. Semantic queries return more relevant results than keyword/full-read approach on corpus of 100+ entries
   3. The canonical `kb/*.md` layer is unchanged — vector index is additive, not a replacement
-**Plans:** 0/3 plans complete
+**Plans:** 2/3 plans executed
 
 Plans:
 - [ ] 04-00-PLAN.md — Wave 0 scaffold: .gitignore, test stubs, chromadb + sentence-transformers install
@@ -82,4 +82,4 @@ Plans:
 | 1. KB Schema + Personal Context Seed | 1/1 | Complete   | 2026-04-10 |
 | 2. Knowledge Processor | 3/3 | Complete   | 2026-04-12 |
 | 3. Oracle Interface | 2/2 | Complete   | 2026-04-13 |
-| 4. Semantic Search | 0/3 | In Progress | - |
+| 4. Semantic Search | 2/3 | In Progress|  |

@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: planning
-stopped_at: Completed 03-oracle-interface/03-02-PLAN.md
-last_updated: "2026-04-13T14:22:31.534Z"
+stopped_at: Completed 04-semantic-search/04-01-PLAN.md
+last_updated: "2026-04-14T13:08:28.079Z"
 last_activity: 2026-04-08 — Roadmap created, requirements extracted (7 v1 requirements across 3 active phases)
 progress:
   total_phases: 4
   completed_phases: 3
-  total_plans: 6
-  completed_plans: 6
+  total_plans: 9
+  completed_plans: 8
   percent: 0
 ---
 
@@ -56,6 +56,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 02-knowledge-processor P03 | 45min | 2 tasks | 50 files |
 | Phase 03-oracle-interface P01 | 10min | 2 tasks | 3 files |
 | Phase 03-oracle-interface P02 | 2min | 3 tasks | 2 files |
+| Phase 04-semantic-search P01 | 15min | 2 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -81,6 +82,8 @@ Recent decisions affecting current work:
 - [Phase 03-oracle-interface]: ingest auto-calls rebuild_index() so index never drifts after a write
 - [Phase 03-oracle-interface]: CLAUDE.md uses full paths (kb/concepts/, kb/personal/, kb/INDEX.md) not relative — session-agnostic portability
 - [Phase 03-oracle-interface]: Contradiction Rule includes false-positive handling: check detail field for 'no direct logical conflicts' before surfacing
+- [Phase 04-semantic-search]: chromadb and SentenceTransformerEmbeddingFunction imports deferred inside function bodies — unit tests that never use the vector index can import process.py without these deps
+- [Phase 04-semantic-search]: _sync_to_vector_index swallows all exceptions (non-critical path) — ingest_note never fails due to vector sync failures
 
 ### Pending Todos
 
@@ -92,6 +95,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-13T07:16:57.813Z
-Stopped at: Completed 03-oracle-interface/03-02-PLAN.md
+Last session: 2026-04-14T13:08:28.073Z
+Stopped at: Completed 04-semantic-search/04-01-PLAN.md
 Resume file: None

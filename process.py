@@ -39,13 +39,41 @@ KB_PERSONAL_DIR: Path = Path("kb/personal")
 PROCESSED_LOG: Path = Path("processed.log")
 LOW_CONFIDENCE_THRESHOLD: float = 0.5
 
+CHROMA_PATH: str = ".chroma"
+VECTOR_COLLECTION_NAME: str = "secondbrain"
+VECTOR_EMBEDDING_MODEL: str = "paraphrase-multilingual-MiniLM-L12-v2"
+
 TOPIC_TO_DOMAIN: dict[str, str] = {
     "claude-env": "ia",
 }
 
 OPTIONAL_LIST_FIELDS = ("contradicts", "extends", "gaps")
 
-GROQ_MODEL_EXTRACTION = "llama-3.3-70b-versatile"
+GROQ_MODEL_PRIMARY = "llama-3.3-70b-versatile"
+GROQ_MODEL_FALLBACK = "llama-3.1-8b-instant"
+GROQ_MODEL_EXTRACTION = GROQ_MODEL_PRIMARY  # kept for backward compat
+
+# Keys in priority order — add more by appending GROQ_API_KEY_2, GROQ_API_KEY_3 to .env
+def _load_groq_keys() -> list[str]:
+    keys = []
+    for var in ("GROQ_API_KEY", "GROQ_API_KEY_2", "GROQ_API_KEY_3"):
+        v = os.getenv(var, "").strip()
+        if v:
+            keys.append(v)
+    return keys
+
+# Build client rotation: (key, model) pairs in priority order
+# Priority: all keys with primary model first, then all keys with fallback model
+def _groq_clients() -> list[tuple[str, str]]:
+    keys = _load_groq_keys()
+    if not keys:
+        return []
+    combos = []
+    for key in keys:
+        combos.append((key, GROQ_MODEL_PRIMARY))
+    for key in keys:
+        combos.append((key, GROQ_MODEL_FALLBACK))
+    return combos
 
 EXTRACTION_SYSTEM_PROMPT = """You are a knowledge extraction engine. Given a note (Instagram carousel or video transcription), identify all distinct, atomic concepts it teaches.
 
@@ -266,7 +294,6 @@ def extract_concepts(note_content: str, note_metadata: dict) -> list[dict]:
     from groq import Groq
     from groq import BadRequestError as GroqBadRequestError, RateLimitError as GroqRateLimitError
 
-    client = Groq()
     topic = note_metadata.get("topic", "")
     domain_hint = TOPIC_TO_DOMAIN.get(topic, "infer from content")
     user_msg = (
@@ -274,43 +301,50 @@ def extract_concepts(note_content: str, note_metadata: dict) -> list[dict]:
         f"Suggested domain (override if content disagrees): {domain_hint}\n\n"
         f"--- NOTE BODY ---\n{note_content}"
     )
-    common_args = dict(
-        model=GROQ_MODEL_EXTRACTION,
-        messages=[
-            {"role": "system", "content": EXTRACTION_SYSTEM_PROMPT},
-            {"role": "user", "content": user_msg},
-        ],
-        temperature=0.1,
-    )
-    try:
-        response = client.chat.completions.create(
-            response_format={"type": "json_object"},
-            **common_args,
-        )
-    except GroqRateLimitError:
-        # Re-raise rate limit errors — callers must handle or bubble up
-        raise
-    except GroqBadRequestError:
-        # Groq rejects json_object mode when the model produces malformed JSON.
-        # Fall back to plain text response and parse JSON manually.
-        response = client.chat.completions.create(**common_args)
 
-    raw = response.choices[0].message.content
-    # Strip markdown code fences if present
-    raw_stripped = raw.strip()
-    if raw_stripped.startswith("```"):
-        lines = raw_stripped.splitlines()
-        raw_stripped = "\n".join(lines[1:-1] if lines[-1] == "```" else lines[1:])
-    try:
-        payload = json.loads(raw_stripped)
-    except json.JSONDecodeError as e:
-        raise RuntimeError(f"Groq returned invalid JSON: {e}\n{raw[:500]}")
-    concepts = payload.get("concepts", [])
-    # Coerce body to string if model returns bullet list as array
-    for c in concepts:
-        if isinstance(c.get("body"), list):
-            c["body"] = "\n".join(str(item) for item in c["body"])
-    return concepts
+    last_error: Exception | None = None
+    for api_key, model in _groq_clients():
+        client = Groq(api_key=api_key)
+        common_args = dict(
+            model=model,
+            messages=[
+                {"role": "system", "content": EXTRACTION_SYSTEM_PROMPT},
+                {"role": "user", "content": user_msg},
+            ],
+            temperature=0.1,
+        )
+        try:
+            try:
+                response = client.chat.completions.create(
+                    response_format={"type": "json_object"},
+                    **common_args,
+                )
+            except GroqBadRequestError:
+                response = client.chat.completions.create(**common_args)
+
+            raw = response.choices[0].message.content
+            raw_stripped = raw.strip()
+            if raw_stripped.startswith("```"):
+                lines = raw_stripped.splitlines()
+                raw_stripped = "\n".join(lines[1:-1] if lines[-1] == "```" else lines[1:])
+            try:
+                payload = json.loads(raw_stripped)
+            except json.JSONDecodeError as e:
+                raise RuntimeError(f"Groq returned invalid JSON: {e}\n{raw[:500]}")
+            concepts = payload.get("concepts", [])
+            for c in concepts:
+                if isinstance(c.get("body"), list):
+                    c["body"] = "\n".join(str(item) for item in c["body"])
+            if model != GROQ_MODEL_PRIMARY:
+                print(f"  [~] Used fallback model ({model})")
+            return concepts
+
+        except GroqRateLimitError as e:
+            print(f"  [~] Rate limit on {api_key[:12]}... / {model} — trying next")
+            last_error = e
+            continue
+
+    raise last_error or RuntimeError("No Groq clients available")
 
 
 def find_contradictions(new_entry: dict, kb_dir: Path) -> list[dict]:
@@ -346,8 +380,7 @@ def find_contradictions(new_entry: dict, kb_dir: Path) -> list[dict]:
     if not existing:
         return []
 
-    client = Groq()
-    from groq import RateLimitError as GroqRateLimitError, BadRequestError as GroqBadRequestError
+    from groq import Groq, RateLimitError as GroqRateLimitError, BadRequestError as GroqBadRequestError
 
     user_msg = (
         f"New entry:\n"
@@ -355,35 +388,136 @@ def find_contradictions(new_entry: dict, kb_dir: Path) -> list[dict]:
         f"Existing {domain} entries to check against:\n"
         f"{json.dumps(existing, ensure_ascii=False)}"
     )
+
+    for api_key, model in _groq_clients():
+        client = Groq(api_key=api_key)
+        try:
+            try:
+                response = client.chat.completions.create(
+                    model=model,
+                    response_format={"type": "json_object"},
+                    messages=[
+                        {"role": "system", "content": CONTRADICTION_SYSTEM_PROMPT},
+                        {"role": "user", "content": user_msg},
+                    ],
+                    temperature=0.0,
+                )
+            except GroqBadRequestError:
+                response = client.chat.completions.create(
+                    model=model,
+                    messages=[
+                        {"role": "system", "content": CONTRADICTION_SYSTEM_PROMPT},
+                        {"role": "user", "content": user_msg},
+                    ],
+                    temperature=0.0,
+                )
+            raw = response.choices[0].message.content
+            try:
+                payload = json.loads(raw)
+            except json.JSONDecodeError:
+                return []
+            return payload.get("contradictions", [])
+
+        except GroqRateLimitError:
+            continue
+
+    print(f"[WARN] find_contradictions — all clients rate-limited, skipping")
+    return []
+
+
+# ---------- Vector Index ----------
+
+def _get_vector_collection(chroma_path: str = CHROMA_PATH):
+    """Return (client, collection) tuple with multilingual embedding function."""
+    import chromadb
+    from chromadb.utils.embedding_functions import SentenceTransformerEmbeddingFunction
+    client = chromadb.PersistentClient(path=chroma_path)
+    ef = SentenceTransformerEmbeddingFunction(model_name=VECTOR_EMBEDDING_MODEL)
+    col = client.get_or_create_collection(
+        name=VECTOR_COLLECTION_NAME,
+        embedding_function=ef,
+    )
+    return client, col
+
+
+def upsert_entry(
+    slug: str,
+    document_text: str,
+    domain: str,
+    confidence: float,
+    chroma_path: str = CHROMA_PATH,
+) -> None:
+    _, col = _get_vector_collection(chroma_path)
+    col.upsert(
+        ids=[slug],
+        documents=[document_text],
+        metadatas=[{"domain": domain, "confidence": float(confidence)}],
+    )
+
+
+def rebuild_vector_index(
+    concepts_dir: Path = KB_CONCEPTS_DIR,
+    personal_dir: Path = KB_PERSONAL_DIR,
+    chroma_path: str = CHROMA_PATH,
+) -> int:
+    """Full rebuild: delete + recreate collection from all kb/ entries.
+
+    Returns number of entries upserted. Does not modify any kb/ file.
+    """
+    import chromadb
+    from chromadb.utils.embedding_functions import SentenceTransformerEmbeddingFunction
+
+    client = chromadb.PersistentClient(path=chroma_path)
     try:
-        response = client.chat.completions.create(
-            model=GROQ_MODEL_EXTRACTION,
-            response_format={"type": "json_object"},
-            messages=[
-                {"role": "system", "content": CONTRADICTION_SYSTEM_PROMPT},
-                {"role": "user", "content": user_msg},
-            ],
-            temperature=0.0,
-        )
-    except GroqRateLimitError as e:
-        print(f"[WARN] find_contradictions rate-limited — skipping: {e}")
-        return []
-    except GroqBadRequestError:
-        # Fallback to plain text mode when json_object validation fails
-        response = client.chat.completions.create(
-            model=GROQ_MODEL_EXTRACTION,
-            messages=[
-                {"role": "system", "content": CONTRADICTION_SYSTEM_PROMPT},
-                {"role": "user", "content": user_msg},
-            ],
-            temperature=0.0,
-        )
-    raw = response.choices[0].message.content
+        client.delete_collection(VECTOR_COLLECTION_NAME)
+    except Exception:
+        pass  # collection may not exist yet
+    ef = SentenceTransformerEmbeddingFunction(model_name=VECTOR_EMBEDDING_MODEL)
+    col = client.create_collection(
+        name=VECTOR_COLLECTION_NAME,
+        embedding_function=ef,
+    )
+
+    ids: list[str] = []
+    docs: list[str] = []
+    metas: list[dict] = []
+    sources: list[Path] = []
+    if concepts_dir.exists():
+        sources.extend(sorted(concepts_dir.glob("*.md")))
+    if personal_dir.exists():
+        sources.extend(sorted(personal_dir.glob("*.md")))
+
+    for md_path in sources:
+        post = frontmatter.load(str(md_path))
+        slug = post.metadata.get("concept", md_path.stem)
+        domain = post.metadata.get("domain", "")
+        summary = post.metadata.get("summary", "") or ""
+        body = post.content or ""
+        document_text = f"{summary}\n{body}".strip() or slug
+        ids.append(str(slug))
+        docs.append(document_text)
+        metas.append({
+            "domain": str(domain),
+            "confidence": float(post.metadata.get("confidence", 0) or 0),
+        })
+
+    if ids:
+        col.upsert(ids=ids, documents=docs, metadatas=metas)
+    return len(ids)
+
+
+def _sync_to_vector_index(concept: dict, chroma_path: str = CHROMA_PATH) -> None:
+    """Non-critical: upsert one concept into vector index. Never raises."""
     try:
-        payload = json.loads(raw)
-    except json.JSONDecodeError:
-        return []
-    return payload.get("contradictions", [])
+        slug = str(concept["concept"])
+        summary = concept.get("summary", "") or ""
+        body = concept.get("body", "") or ""
+        domain = str(concept.get("domain", ""))
+        confidence = float(concept.get("confidence", 0) or 0)
+        document_text = f"{summary}\n{body}".strip() or slug
+        upsert_entry(slug, document_text, domain, confidence, chroma_path)
+    except Exception as e:
+        print(f"[WARN] vector index sync failed for {concept.get('concept')}: {e}")
 
 
 def write_kb_entry(concept_slug: str, data: dict, kb_dir: Path) -> Path:

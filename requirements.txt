@@ -1,0 +1,4 @@
+chromadb==1.5.7
+sentence-transformers
+python-frontmatter==1.1.0
+groq

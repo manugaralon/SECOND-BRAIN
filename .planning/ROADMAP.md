@@ -9,7 +9,7 @@ The system is built in three executable phases plus one deferred phase. Phase 1 
 - [x] **Phase 1: KB Schema + Personal Context Seed** - Lock the knowledge schema and author personal context entries manually before any LLM writes to the KB (completed 2026-04-10)
 - [x] **Phase 2: Knowledge Processor** - Build `process.py` that converts `notes/*.md` → atomic `kb/*.md` with contradiction detection and idempotency (completed 2026-04-11)
 - [x] **Phase 3: Oracle Interface** - Write the `CLAUDE.md` that turns Claude Code into the oracle: domain filtering, contradiction surfacing, gap detection, personalized synthesis (completed 2026-04-13)
-- [ ] **Phase 4: Semantic Search** - Add ChromaDB vector index when corpus exceeds ~100 concepts (deferred — plan only when threshold is reached)
+- [x] **Phase 4: Semantic Search** - Add ChromaDB vector index when corpus exceeds ~100 concepts (deferred — plan only when threshold is reached) (completed 2026-04-14)
 
 ## Phase Details
 
@@ -68,7 +68,7 @@ Plans:
   1. ChromaDB index is populated from `kb/*.md` and stays in sync when entries are added or updated
   2. Semantic queries return more relevant results than keyword/full-read approach on corpus of 100+ entries
   3. The canonical `kb/*.md` layer is unchanged — vector index is additive, not a replacement
-**Plans:** 2/3 plans executed
+**Plans:** 3/3 plans complete
 
 Plans:
 - [ ] 04-00-PLAN.md — Wave 0 scaffold: .gitignore, test stubs, chromadb + sentence-transformers install
@@ -82,4 +82,4 @@ Plans:
 | 1. KB Schema + Personal Context Seed | 1/1 | Complete   | 2026-04-10 |
 | 2. Knowledge Processor | 3/3 | Complete   | 2026-04-12 |
 | 3. Oracle Interface | 2/2 | Complete   | 2026-04-13 |
-| 4. Semantic Search | 2/3 | In Progress|  |
+| 4. Semantic Search | 3/3 | Complete   | 2026-04-14 |

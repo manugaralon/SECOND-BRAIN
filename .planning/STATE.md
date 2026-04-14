@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: planning
-stopped_at: Completed 04-semantic-search/04-01-PLAN.md
-last_updated: "2026-04-14T13:08:28.079Z"
+stopped_at: "Checkpoint: 04-semantic-search/04-02-PLAN.md Task 3 — awaiting human-verify"
+last_updated: "2026-04-14T13:13:55.720Z"
 last_activity: 2026-04-08 — Roadmap created, requirements extracted (7 v1 requirements across 3 active phases)
 progress:
   total_phases: 4
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 9
-  completed_plans: 8
+  completed_plans: 9
   percent: 0
 ---
 
@@ -57,6 +57,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 03-oracle-interface P01 | 10min | 2 tasks | 3 files |
 | Phase 03-oracle-interface P02 | 2min | 3 tasks | 2 files |
 | Phase 04-semantic-search P01 | 15min | 2 tasks | 1 files |
+| Phase 04-semantic-search P02 | 3min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -84,6 +85,8 @@ Recent decisions affecting current work:
 - [Phase 03-oracle-interface]: Contradiction Rule includes false-positive handling: check detail field for 'no direct logical conflicts' before surfacing
 - [Phase 04-semantic-search]: chromadb and SentenceTransformerEmbeddingFunction imports deferred inside function bodies — unit tests that never use the vector index can import process.py without these deps
 - [Phase 04-semantic-search]: _sync_to_vector_index swallows all exceptions (non-critical path) — ingest_note never fails due to vector sync failures
+- [Phase 04-semantic-search]: query_vector_index omits where= entirely when domains is None/empty — no domain: null filter that would break ChromaDB
+- [Phase 04-semantic-search]: CLAUDE.md threshold set at >20 entries — below this, full-read is fast enough; above, vector narrowing reduces context load
 
 ### Pending Todos
 
@@ -95,6 +98,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-14T13:08:28.073Z
-Stopped at: Completed 04-semantic-search/04-01-PLAN.md
+Last session: 2026-04-14T13:13:55.712Z
+Stopped at: Checkpoint: 04-semantic-search/04-02-PLAN.md Task 3 — awaiting human-verify
 Resume file: None

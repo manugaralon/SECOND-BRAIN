@@ -520,6 +520,36 @@ def _sync_to_vector_index(concept: dict, chroma_path: str = CHROMA_PATH) -> None
         print(f"[WARN] vector index sync failed for {concept.get('concept')}: {e}")
 
 
+def query_vector_index(
+    query: str,
+    domains: list[str] | None = None,
+    n_results: int = 5,
+    chroma_path: str = CHROMA_PATH,
+) -> list[str]:
+    """Return up to `n_results` slugs from the vector index, ranked by semantic
+    similarity to `query`. Optionally filter by domain.
+
+    Safe on empty/small collections: n_results is clamped to col.count(),
+    returns [] if count == 0 (Pitfall 3 from 04-RESEARCH.md).
+    """
+    _, col = _get_vector_collection(chroma_path)
+    count = col.count()
+    if count == 0:
+        return []
+    clamped = min(n_results, count)
+
+    kwargs: dict = {"query_texts": [query], "n_results": clamped}
+    if domains:
+        if len(domains) == 1:
+            kwargs["where"] = {"domain": domains[0]}
+        else:
+            kwargs["where"] = {"domain": {"$in": list(domains)}}
+
+    results = col.query(**kwargs)
+    ids = results.get("ids") or [[]]
+    return list(ids[0]) if ids else []
+
+
 def write_kb_entry(concept_slug: str, data: dict, kb_dir: Path) -> Path:
     kb_dir.mkdir(parents=True, exist_ok=True)
     post = frontmatter.Post(data.get("body", ""))
@@ -725,6 +755,28 @@ def _cmd_rebuild_vector_index(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_query(args: argparse.Namespace) -> int:
+    chroma_path = args.chroma_path if args.chroma_path else CHROMA_PATH
+    domains = [args.domain] if args.domain else None
+    slugs = query_vector_index(
+        query=args.query,
+        domains=domains,
+        n_results=args.n_results,
+        chroma_path=chroma_path,
+    )
+    if not slugs:
+        # Distinguish empty-collection from zero-matches
+        _, col = _get_vector_collection(chroma_path)
+        if col.count() == 0:
+            print("[INFO] vector index is empty — run: python3 process.py rebuild-vector-index")
+            return 0
+        print("[INFO] no matches")
+        return 0
+    for slug in slugs:
+        print(slug)
+    return 0
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(
         prog="process.py",
@@ -760,6 +812,17 @@ def main() -> int:
     p_rebuild_vec.add_argument("--personal-dir", default=None, help="Override KB_PERSONAL_DIR")
     p_rebuild_vec.add_argument("--chroma-path", default=None, help="Override CHROMA_PATH (default .chroma)")
     p_rebuild_vec.set_defaults(func=_cmd_rebuild_vector_index)
+
+    p_query = sub.add_parser(
+        "query",
+        help="Semantic query against the vector index; prints top N slugs",
+        description="Semantic query against the vector index; prints top N slugs",
+    )
+    p_query.add_argument("query", help="Natural-language query string")
+    p_query.add_argument("--domain", default=None, help="Filter to a single domain (e.g. fisioterapia)")
+    p_query.add_argument("--n-results", type=int, default=5, help="Max slugs to return (clamped to collection size)")
+    p_query.add_argument("--chroma-path", default=None, help="Override CHROMA_PATH (default .chroma)")
+    p_query.set_defaults(func=_cmd_query)
 
     args = parser.parse_args()
     return args.func(args)

@@ -68,7 +68,12 @@ Plans:
   1. ChromaDB index is populated from `kb/*.md` and stays in sync when entries are added or updated
   2. Semantic queries return more relevant results than keyword/full-read approach on corpus of 100+ entries
   3. The canonical `kb/*.md` layer is unchanged — vector index is additive, not a replacement
-**Plans**: TBD — plan only when corpus threshold is reached
+**Plans:** 0/3 plans complete
+
+Plans:
+- [ ] 04-00-PLAN.md — Wave 0 scaffold: .gitignore, test stubs, chromadb + sentence-transformers install
+- [ ] 04-01-PLAN.md — Vector index write path: rebuild, sync on ingest, CLI subcommand
+- [ ] 04-02-PLAN.md — Semantic query path: query_vector_index + CLAUDE.md oracle protocol update
 
 ## Progress
 
@@ -77,4 +82,4 @@ Plans:
 | 1. KB Schema + Personal Context Seed | 1/1 | Complete   | 2026-04-10 |
 | 2. Knowledge Processor | 3/3 | Complete   | 2026-04-12 |
 | 3. Oracle Interface | 2/2 | Complete   | 2026-04-13 |
-| 4. Semantic Search | 0/? | Deferred | - |
+| 4. Semantic Search | 0/3 | In Progress | - |

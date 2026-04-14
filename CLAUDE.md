@@ -33,13 +33,16 @@ This is not optional. Every session starts with this step.
 When Manuel asks a question about a topic:
 
 1. **Identify domain(s):** Determine which domain(s) are relevant from: fisioterapia, ia, finanzas, trading, esoterismo, psicologia, deportes, personal.
-2. **Read INDEX.md:** Open `kb/INDEX.md` and collect all entry paths for the matching domain(s).
-3. **Read concept files:** Read each concept file listed in INDEX.md for those domains.
+2. **Count domain entries from INDEX.md:** Open `kb/INDEX.md` and count entries for each matching domain.
+3. **Choose retrieval path:**
+   - **If a domain has > 20 entries:** Invoke the vector index. Run `python3 process.py query "<la pregunta de Manuel>" --domain <domain> --n-results 10` and read only the returned concept files (`kb/concepts/<slug>.md`). If the command prints `[INFO] vector index is empty`, fall back to the full-read path for that domain and warn Manuel that the vector index needs rebuilding (`python3 process.py rebuild-vector-index`).
+   - **If a domain has ≤ 20 entries:** Full-read path — collect all entry paths for that domain from INDEX.md and read every concept file listed.
+   - Personal context entries in `kb/personal/` are ALWAYS full-read at session start (see Session Initialization), never via the vector path.
 4. **Check contradicts field:** For every loaded concept, check if it has a `contradicts` field in frontmatter.
 5. **Cross-apply personal context:** Check ALL personal context entries for relevance to the question — not just the one named in the question. Example: a question about "ejercicios para escoliosis" must also consider pies-planos (affects exercise selection) and perfil-fisico-general.
 6. **Synthesize:** Integrate domain knowledge with personal context into a concrete, personalized answer.
 
-If a question spans multiple domains, read entries from all relevant domains.
+If a question spans multiple domains, apply the per-domain threshold independently: large domains go through the vector path, small domains through the full-read path.
 
 ## Gap Detection (KB-05)
 
@@ -79,6 +82,8 @@ For simple clarification questions or non-KB queries, this structure is not requ
 - `python3 process.py ingest --all` — ingest all unprocessed notes
 - `python3 process.py lint` — validate all KB entries against schema
 - `python3 process.py rebuild-index` — regenerate kb/INDEX.md from disk
+- `python3 process.py rebuild-vector-index` — rebuild the ChromaDB vector index from all kb/ entries (run after bulk ingests or if `.chroma/` is deleted)
+- `python3 process.py query "<texto>" --domain <d> --n-results 10` — semantic search; prints top N slugs for the oracle to read
 
 ## Rules
 

@@ -634,6 +634,9 @@ def ingest_note(
             print(f"[CONTRADICTION] {slug} contradicts: {slugs_conflicting}")
             n_contradictions += 1
 
+        # Pass 3: sync to vector index (non-critical — never raises)
+        _sync_to_vector_index(concept)
+
     # Log AFTER all writes complete (avoid partial-run race)
     status = "ok" if n_created > 0 else ("all_skipped" if n_skipped > 0 else "no_entries")
     append_processed(
@@ -713,6 +716,15 @@ def _cmd_rebuild_index(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_rebuild_vector_index(args: argparse.Namespace) -> int:
+    concepts_dir = Path(args.concepts_dir) if args.concepts_dir else KB_CONCEPTS_DIR
+    personal_dir = Path(args.personal_dir) if args.personal_dir else KB_PERSONAL_DIR
+    chroma_path = args.chroma_path if args.chroma_path else CHROMA_PATH
+    n = rebuild_vector_index(concepts_dir, personal_dir, chroma_path)
+    print(f"[OK] rebuilt vector index with {n} entries at {chroma_path}")
+    return 0
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(
         prog="process.py",
@@ -738,6 +750,16 @@ def main() -> int:
     p_rebuild.add_argument("--personal-dir", default=None, help="Override KB_PERSONAL_DIR")
     p_rebuild.add_argument("--index-path", default=None, help="Override INDEX_PATH")
     p_rebuild.set_defaults(func=_cmd_rebuild_index)
+
+    p_rebuild_vec = sub.add_parser(
+        "rebuild-vector-index",
+        help="Rebuild ChromaDB vector index from all kb/ entries",
+        description="Rebuild ChromaDB vector index from all kb/ entries",
+    )
+    p_rebuild_vec.add_argument("--concepts-dir", default=None, help="Override KB_CONCEPTS_DIR")
+    p_rebuild_vec.add_argument("--personal-dir", default=None, help="Override KB_PERSONAL_DIR")
+    p_rebuild_vec.add_argument("--chroma-path", default=None, help="Override CHROMA_PATH (default .chroma)")
+    p_rebuild_vec.set_defaults(func=_cmd_rebuild_vector_index)
 
     args = parser.parse_args()
     return args.func(args)
